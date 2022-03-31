@@ -3,6 +3,8 @@ import discord
 import random
 from dotenv import load_dotenv
 from discord.ext import commands
+from personalize import get_name, get_friends
+
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -20,12 +22,12 @@ async def test(ctx):
 
 @bot.command(name='hello', help='Sends a little hello')
 async def hello(ctx):
-    await ctx.send(f'Hello {ctx.author}')
+    await ctx.send(f'Hello {get_name(ctx.author)}')
 
 @bot.command(name='whostreaming', help='Tells you who is going to stream')
 async def who_streaming(ctx):
     members = [i for i in ctx.channel.members if i.bot is not True]
     streamer = random.choice(members)
-    await ctx.send(f"You're streaming {streamer}")
+    await ctx.send(f"You're streaming {get_name(streamer)}")
 
 bot.run(TOKEN)
