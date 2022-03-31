@@ -1,1 +1,1 @@
-worker: python3 eight_ball.py
+worker: python3 bot/eight_ball.py
