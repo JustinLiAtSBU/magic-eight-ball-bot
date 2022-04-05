@@ -24,7 +24,7 @@ async def test(ctx):
 async def hello(ctx):
     await ctx.send(f'Hello {get_name(ctx.author)}')
 
-@bot.command(name='whostreaming', help='Tells you who is going to stream')
+@bot.command(name='whoisstreaming', help='Tells you who is going to stream')
 async def who_streaming(ctx):
     members = [i for i in ctx.channel.members if i.bot is not True]
     streamer = random.choice(members)
