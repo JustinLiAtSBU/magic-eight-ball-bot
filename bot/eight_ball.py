@@ -57,10 +57,12 @@ async def random_movie(ctx, top, *args):
     res = requests.get(url = URL, params = PARAMS)
     data = res.json()
 
-    response += f'\n🥁 Your random movie is... 🥁\n\n'
-    response += "> {}".format(f"🍿 {data['title']} 🎬 \n")
-    response += "> {}".format(f"Released in {data['year']} \n")
-    response += "> {}".format(f"With a rating of {data['rating']}⭐️ from {data['votes']} users 🕺 \n")
+    response += f'\n🥁 **Your random movie is... **🥁\n\n'
+    response += "> {}".format(f"🍿 **{data['title']} ** 🎬 \n")
+    response += "> {}".format("\n")
+    response += "> {}".format(f"Released in **{data['year']}** 🗓 \n")
+    response += "> {}".format(f"With a rating of **{data['rating']}**⭐️ from **{data['votes']}** users 🕺 \n")
+    response += "> {}".format(f"Length: **{data['runtime']} minutes** ⏱ \n")
     response += "> {}".format(f"Genres: *{data['genres']}*")
 
     await ctx.send(response) 
