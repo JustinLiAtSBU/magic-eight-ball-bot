@@ -1,5 +1,7 @@
 import os
 import discord
+import flag
+import pycountry
 import random
 import requests
 from dotenv import load_dotenv
@@ -34,38 +36,85 @@ async def who_streaming(ctx):
 
 @bot.command(name='randommovie', help='Gives you a random movie to watch. If no arguments are passed, we pick a random movie made after 1990 with a rating of 7+')
 async def random_movie(ctx, top, *args):
-    URL = f'{API}/api/movies/random'
-    PARAMS = {
-        'size': top
+    request = {
+        'type': 'movie',
+        'top': top
     }
+    URL = f'{API}/api/movies/random'
+    PARAMS = { 'size': top }
 
-    response = f'✨ Your request is in {get_name(ctx.author)} ✨ \n\n'
-    response += f'You want to watch a random movie out of the top {top} movies on **IMDB**...\n'
     for arg in args:
         key = arg.split('=')[0]
         value = arg.split('=')[1]
-        PARAMS[f'min{key.capitalize()}'] = value
+        if key != 'country':
+            PARAMS[f'min{key.capitalize()}'] = value
+        else:
+            PARAMS[key] = value
+    print(PARAMS)
+    try:
+        res = requests.get(url = URL, params = PARAMS)
+        data = res.json()
+        response, embed = response_builder(ctx.author, request, args, data)
+        await ctx.send(response)
+        await ctx.send(embed=embed)
+    except requests.exceptions.RequestException as e:
+        await ctx.send("No movies found with those criteria")
+    
+
+def response_builder(author, request, args, data):
+    response = f"✨ Your request is in {get_name(author)} ✨ \n\n"
+    response += f"You want to watch a random {request['type']} out of the top {request['top']} movies on **IMDB**...\n"
+    for arg in args:
+        key = arg.split('=')[0]
+        value = arg.split('=')[1]
         if arg == args[-1]:
             response += 'and '
         if key == 'year':
             response += f'made after {value} 🗓 ...\n'
         elif key == 'runtime':
             response += f'with a minimum {key} of {value} ⏱ minutes...\n'
+        elif key == 'country':
+            name, emoji = get_country_info(value)
+            response += f'from {name} {emoji}'
         else:
             response += f'a minimum {key} of {value}\n'
+    response += f'\n\n🥁 **Your random {request["type"]} is... **🥁\n\n'
 
-    res = requests.get(url = URL, params = PARAMS)
-    data = res.json()
+    embed = discord.Embed(title=f"🍿 **{data['title']}** 🎬", description="", color=0x00ff00)
+    embed.set_author(name=f"{get_name(author)}", url="", icon_url=author.avatar_url)
+    embed.add_field(name="\u200b", value=f"{data['plot']}", inline=False)
+    embed.add_field(name="Release Date 🗓 ", value=f"{data['year']}", inline=True)
+    embed.add_field(name="Rating ⭐️", value=f"{data['rating']}⭐️ from {data['votes']} users 🕺", inline=False)
+    country = pycountry.countries.search_fuzzy(data['country'])[0]
+    name, emoji = get_country_info(country.alpha_2)
+    embed.add_field(name="Runtime ⏱", value=f"{get_common_time(data['runtime'])}", inline=False)
+    embed.add_field(name="Country", value=f"{name} {emoji}", inline=False)
+    embed.add_field(name="Genres", value=f"{data['genres']}", inline=False)
+    embed.add_field(name="Awards 🏆", value=f"{data['awards']}", inline=False)
+    embed.set_image(url=data['poster'])
+    embed.add_field(name="\u200b", value="Contribute to this bot [here](https://github.com/JustinLiAtSBU/magic-eight-ball-bot)")
 
-    response += f'\n🥁 **Your random movie is... **🥁\n\n'
-    response += "> {}".format(f"🍿 **{data['title']} ** 🎬 \n")
-    response += "> {}".format("\n")
-    response += "> {}".format(f"Released in **{data['year']}** 🗓 \n")
-    response += "> {}".format(f"With a rating of **{data['rating']}**⭐️ from **{data['votes']}** users 🕺 \n")
-    response += "> {}".format(f"Length: **{data['runtime']} minutes** ⏱ \n")
-    response += "> {}".format(f"Genres: *{data['genres']}*")
+    return response, embed
 
-    await ctx.send(response) 
+
+def get_country_info(country_code):
+    country = pycountry.countries.get(alpha_2=country_code)
+    name = country.name
+    if hasattr(country, 'common_name'):
+        name = country.common_name
+    emoji = flag.flag(country_code)
+    return name, emoji
+
+
+def get_common_time(time):
+    common_time = f""
+    hours = time // 60
+    minutes = time % 60
+    if hours:
+        common_time += f"{hours} hours "
+    if minutes:
+        common_time += f"and {minutes} minutes"
+    return common_time
 
 
 bot.run(TOKEN)
