@@ -36,7 +36,7 @@ async def who_streaming(ctx):
     streamer = random.choice(members)
     await ctx.send(f"You're streaming {get_name(streamer)}")
 
-@bot.command(name='randommovie', help='Gives you a random movie to watch. If no arguments are passed, we pick a random movie made after 1990 with a rating of 7+')
+@bot.command(name='randommovie', help='Gives you a random movie to watch.')
 async def random_movie(ctx, *args):
     URL = f'{API}/api/movies/random'
     request = {
@@ -51,7 +51,7 @@ async def random_movie(ctx, *args):
     except requests.exceptions.RequestException as e:
         await ctx.send("No movies found with those criteria")
 
-@bot.command(name='randomtvshow', help='Gives you a random TV show to watch. If no arguments are passed, we pick a random TV show made after 1990 with a rating of 7+')
+@bot.command(name='randomtvshow', help='Gives you a random TV show to watch.')
 async def random_tv_show(ctx, *args):
     URL = f'{API}/api/tvshows/random'
     request = {
@@ -65,7 +65,44 @@ async def random_tv_show(ctx, *args):
         await ctx.send(embed=motion_picture_embed(ctx.author, data))
     except requests.exceptions.RequestException as e:
         await ctx.send("No TV shows found with those criteria")
-    
+
+@bot.command(name='randomanime', help='Gives you a random anime to watch.')
+async def random_anime(ctx):
+    args = ('country=JP', 'genres=animation')
+    URL = f'{API}/api/tvshows/random'
+    request = {
+        'type': 'anime',
+        'size': 1000,
+        'country': 'Japan',
+        'genres': 'animation'
+    }
+    try:
+        await ctx.send(user_request_response(ctx.author, request, args))
+        res = requests.get(url=URL, params=build_params(args))
+        data = res.json()
+        await ctx.send(embed=motion_picture_embed(ctx.author, data))
+    except requests.exceptions.RequestException as e:
+        await ctx.send("No animes found with those criteria")
+
+
+@bot.command(name='randomanimemovie', help='Gives you a random anime movie to watch.')
+async def random_anime_movie(ctx):
+    args = ('country=JP', 'genres=animation')
+    URL = f'{API}/api/movies/random'
+    request = {
+        'type': 'anime movie',
+        'size': 1000,
+        'country': 'Japan',
+        'genres': 'animation'
+    }
+    try:
+        await ctx.send(user_request_response(ctx.author, request, args))
+        res = requests.get(url=URL, params=build_params(args))
+        data = res.json()
+        await ctx.send(embed=motion_picture_embed(ctx.author, data))
+    except requests.exceptions.RequestException as e:
+        await ctx.send("No animes found with those criteria")
+
 
 def motion_picture_embed(author, data):
     embed = discord.Embed(title=f"🍿 **{data['title']}** 🎬", description="", color=0x00ff00)
