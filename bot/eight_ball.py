@@ -59,6 +59,33 @@ async def random_movie(ctx, top, *args):
         await ctx.send(embed=embed)
     except requests.exceptions.RequestException as e:
         await ctx.send("No movies found with those criteria")
+
+
+@bot.command(name='randomtvshow', help='Gives you a random TV show to watch. If no arguments are passed, we pick a random TV show made after 1990 with a rating of 7+')
+async def random_movie(ctx, top, *args):
+    request = {
+        'type': 'tvSeries',
+        'top': top
+    }
+    URL = f'{API}/api/tvshows/random'
+    PARAMS = { 'size': top }
+
+    for arg in args:
+        key = arg.split('=')[0]
+        value = arg.split('=')[1]
+        if key != 'country':
+            PARAMS[f'min{key.capitalize()}'] = value
+        else:
+            PARAMS[key] = value
+    print(PARAMS)
+    try:
+        res = requests.get(url = URL, params = PARAMS)
+        data = res.json()
+        response, embed = response_builder(ctx.author, request, args, data)
+        await ctx.send(response)
+        await ctx.send(embed=embed)
+    except requests.exceptions.RequestException as e:
+        await ctx.send("No TV shows found with those criteria")
     
 
 def response_builder(author, request, args, data):
