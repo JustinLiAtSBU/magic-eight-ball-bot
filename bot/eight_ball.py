@@ -47,7 +47,7 @@ async def random_movie(ctx, *args):
 async def random_tv_show(ctx, *args):
     URL = f'{API}/api/tvshows/random'
     request = {
-        'type': 'movie',
+        'type': 'TV show',
         'size': 100
     }
     try:
