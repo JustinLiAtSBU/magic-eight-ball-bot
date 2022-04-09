@@ -62,7 +62,7 @@ async def random_movie(ctx, top, *args):
 
 
 @bot.command(name='randomtvshow', help='Gives you a random TV show to watch. If no arguments are passed, we pick a random TV show made after 1990 with a rating of 7+')
-async def random_movie(ctx, top, *args):
+async def random_tv_show(ctx, top, *args):
     request = {
         'type': 'tvSeries',
         'top': top
