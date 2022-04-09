@@ -22,14 +22,6 @@ NON_MIN_QUERY_PARAMS: Final = ['country', 'size', 'genres']
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord')
 
-@bot.command(name='test', help='Tests whether the bot is running')
-async def test(ctx):
-    await ctx.send('OK')
-
-@bot.command(name='hello', help='Sends a little hello')
-async def hello(ctx):
-    await ctx.send(f'Hello {get_name(ctx.author)}')
-
 @bot.command(name='whoisstreaming', help='Tells you who is going to stream')
 async def who_streaming(ctx):
     members = [i for i in ctx.channel.members if i.bot is not True]
@@ -103,7 +95,6 @@ async def random_anime_movie(ctx):
     except requests.exceptions.RequestException as e:
         await ctx.send("No animes found with those criteria")
 
-
 def motion_picture_embed(author, data):
     embed = discord.Embed(title=f"🍿 **{data['title']}** 🎬", description="", color=0x00ff00)
     embed.set_author(name=f"{get_name(author)}", url="", icon_url=author.avatar_url)
@@ -119,7 +110,6 @@ def motion_picture_embed(author, data):
     embed.set_image(url=data['poster'])
     embed.add_field(name="\u200b", value="Contribute to this bot [here](https://github.com/JustinLiAtSBU/magic-eight-ball-bot)")
     return embed
-
 
 def user_request_response(author, request, args):
     response = f"✨ Your request is in {get_name(author)} ✨ \n\n"
@@ -152,7 +142,6 @@ def get_country_info(country_code):
     emoji = flag.flag(country_code)
     return name, emoji
 
-
 def get_common_time(time):
     common_time = f""
     hours = time // 60
@@ -162,7 +151,6 @@ def get_common_time(time):
     if minutes:
         common_time += f"and {minutes} minutes"
     return common_time
-
 
 def build_params(args):
     PARAMS = { 'size': 100 }
