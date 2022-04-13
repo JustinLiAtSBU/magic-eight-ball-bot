@@ -1,7 +1,7 @@
 import os
 import discord
 import random
-import components
+from components import Ballot
 from dotenv import load_dotenv
 from discord.ext import commands
 from seasoning import get_name, user_request_response, motion_picture_embed
@@ -23,13 +23,8 @@ async def on_ready():
 
 @bot.command(name='test')
 async def test(ctx):
-    button1 = components.UpVoteButton()
-    button2 = Button(label="", style=discord.ButtonStyle.blurple, emoji="👎")
-
-    view = View()
-    view.add_item(button1)
-    view.add_item(button2)
-
+    members = get_channel_members(ctx)
+    view = Ballot(ctx, members)
     await ctx.send("Hello", view=view)
 
 @bot.command(name='whoisstreaming', help='Tells you who is going to stream')
@@ -79,6 +74,9 @@ async def random_anime_movie(ctx):
 async def send_message_with_data(ctx, request, args):
     await ctx.send(user_request_response(ctx.author, request, args))
     data =  build_and_send_request(request, args)
-    await ctx.send(embed=motion_picture_embed(ctx.author, data))
+    await ctx.send(embed=motion_picture_embed(ctx.author, data), view=Ballot(ctx, get_channel_members(ctx)))
+
+def get_channel_members(ctx):
+    return [f"{m.name}#{m.discriminator}" for m in ctx.channel.members if not m.bot]
 
 bot.run(TOKEN)
