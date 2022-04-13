@@ -35,13 +35,7 @@ async def random_movie(ctx, *args):
         'type': 'movie',
         'size': 100
     }
-    try:
-        await ctx.send(user_request_response(ctx.author, request, args))
-        res = requests.get(url=URL, params=build_params(args))
-        data = res.json()
-        await ctx.send(embed=motion_picture_embed(ctx.author, data))
-    except requests.exceptions.RequestException as e:
-        await ctx.send("No movies found with those criteria")
+    await send_message_with_data(ctx, request, args, URL)
 
 @bot.command(name='randomtvshow', help='Gives you a random TV show to watch.')
 async def random_tv_show(ctx, *args):
@@ -50,13 +44,7 @@ async def random_tv_show(ctx, *args):
         'type': 'TV show',
         'size': 100
     }
-    try:
-        await ctx.send(user_request_response(ctx.author, request, args))
-        res = requests.get(url=URL, params=build_params(args))
-        data = res.json()
-        await ctx.send(embed=motion_picture_embed(ctx.author, data))
-    except requests.exceptions.RequestException as e:
-        await ctx.send("No TV shows found with those criteria")
+    await send_message_with_data(ctx, request, args, URL)
 
 @bot.command(name='randomanime', help='Gives you a random anime to watch.')
 async def random_anime(ctx):
@@ -68,14 +56,7 @@ async def random_anime(ctx):
         'country': 'Japan',
         'genres': 'animation'
     }
-    try:
-        await ctx.send(user_request_response(ctx.author, request, args))
-        res = requests.get(url=URL, params=build_params(args))
-        data = res.json()
-        await ctx.send(embed=motion_picture_embed(ctx.author, data))
-    except requests.exceptions.RequestException as e:
-        await ctx.send("No animes found with those criteria")
-
+    await send_message_with_data(ctx, request, args, URL)
 
 @bot.command(name='randomanimemovie', help='Gives you a random anime movie to watch.')
 async def random_anime_movie(ctx):
@@ -87,13 +68,16 @@ async def random_anime_movie(ctx):
         'country': 'Japan',
         'genres': 'animation'
     }
+    await send_message_with_data(ctx, request, args, URL)
+
+async def send_message_with_data(ctx, request, args, URL):
     try:
         await ctx.send(user_request_response(ctx.author, request, args))
         res = requests.get(url=URL, params=build_params(args))
         data = res.json()
         await ctx.send(embed=motion_picture_embed(ctx.author, data))
     except requests.exceptions.RequestException as e:
-        await ctx.send("No animes movies found with those criteria")
+        await ctx.send(f"No {request.type}s found with those criteria")
 
 def motion_picture_embed(author, data):
     embed = discord.Embed(title=f"🍿 **{data['title']}** 🎬", description="", color=0x00ff00)
