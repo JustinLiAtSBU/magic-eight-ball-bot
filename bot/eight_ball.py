@@ -93,7 +93,7 @@ async def random_anime_movie(ctx):
         data = res.json()
         await ctx.send(embed=motion_picture_embed(ctx.author, data))
     except requests.exceptions.RequestException as e:
-        await ctx.send("No animes found with those criteria")
+        await ctx.send("No animes movies found with those criteria")
 
 def motion_picture_embed(author, data):
     embed = discord.Embed(title=f"🍿 **{data['title']}** 🎬", description="", color=0x00ff00)
