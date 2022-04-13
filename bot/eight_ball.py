@@ -21,12 +21,6 @@ bot = commands.Bot(command_prefix='$', intents=intents)
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord')
 
-@bot.command(name='test')
-async def test(ctx):
-    members = get_channel_members(ctx)
-    view = Ballot(ctx, members)
-    await ctx.send("Hello", view=view)
-
 @bot.command(name='whoisstreaming', help='Tells you who is going to stream')
 async def who_streaming(ctx):
     members = [i for i in ctx.channel.members if i.bot is not True]
@@ -74,7 +68,7 @@ async def random_anime_movie(ctx):
 async def send_message_with_data(ctx, request, args):
     await ctx.send(user_request_response(ctx.author, request, args))
     data =  build_and_send_request(request, args)
-    await ctx.send(embed=motion_picture_embed(ctx.author, data), view=Ballot(ctx, get_channel_members(ctx)))
+    await ctx.send(embed=motion_picture_embed(ctx.author, data), view=Ballot(ctx, data, get_channel_members(ctx)))
 
 def get_channel_members(ctx):
     return [f"{m.name}#{m.discriminator}" for m in ctx.channel.members if not m.bot]
