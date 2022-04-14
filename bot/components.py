@@ -55,7 +55,8 @@ class Ballot(View):
     
     def disable_vote_buttons(self):
         for child in self.children:
-            child.disabled = re.match(self.pattern, child.custom_id)
+            if child.custom_id is not None:
+                child.disabled = re.match(self.pattern, child.custom_id)
 
     def votes_embed(self):
         embed_color = 0x808080
