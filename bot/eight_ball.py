@@ -15,6 +15,7 @@ TOKEN: Final = os.getenv('DISCORD_TOKEN')
 intents = discord.Intents().default()
 intents.message_content = True
 intents.members = True
+intents.presences = True
 bot = commands.Bot(command_prefix='$', intents=intents)
 
 @bot.event
@@ -68,9 +69,9 @@ async def random_anime_movie(ctx):
 async def send_message_with_data(ctx, request, args):
     await ctx.send(user_request_response(ctx.author, request, args))
     data =  build_and_send_request(request, args)
-    await ctx.send(embed=motion_picture_embed(ctx.author, data), view=Ballot(ctx, data, get_channel_members(ctx)))
+    await ctx.send(embed=motion_picture_embed(ctx.author, data), view=Ballot(ctx, data, get_online_channel_members(ctx)))
 
-def get_channel_members(ctx):
-    return [f"{m.name}#{m.discriminator}" for m in ctx.channel.members if not m.bot]
+def get_online_channel_members(ctx):
+    return [f"{m.name}#{m.discriminator}" for m in ctx.channel.members if not m.bot and m.status is discord.Status.online]
 
 bot.run(TOKEN)
