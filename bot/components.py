@@ -14,21 +14,19 @@ class Ballot(View):
     @discord.ui.button(custom_id='upvote_button', style=discord.ButtonStyle.green, emoji="👍")
     async def upvote_callback(self, button, interaction):
         self.votes[interaction.user] = 1
+        self.update_button_votes()
         if self.all_voted():
             self.disable_vote_buttons()
             await self.ctx.send(embed=self.votes_embed())
-        else:
-            self.update_button_votes()
         await interaction.response.edit_message(view=self)
 
     @discord.ui.button(custom_id='downvote_button', style=discord.ButtonStyle.danger, emoji="👎")
     async def downvote_callback(self, button, interaction):
         self.votes[interaction.user] = -1
+        self.update_button_votes()
         if self.all_voted():
             self.disable_vote_buttons()
             await self.ctx.send(embed=self.votes_embed())
-        else:
-            self.update_button_votes()
         await interaction.response.edit_message(view=self)
 
     # TODO: Add watched feature for users in upcoming release
