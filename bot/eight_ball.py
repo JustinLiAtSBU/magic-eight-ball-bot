@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from seasoning import get_name, user_request_response, motion_picture_embed
 from typing import Final
-from discord.ui import Button, View
 from requester import build_and_send_request
 
 
@@ -32,7 +31,7 @@ async def who_streaming(ctx):
 async def random_movie(ctx, *args):
     request = {
         'type': 'movie',
-        'size': 100
+        'top': 100
     }
     await send_message_with_data(ctx, request, args)
 
@@ -40,7 +39,7 @@ async def random_movie(ctx, *args):
 async def random_tv_show(ctx, *args):
     request = {
         'type': 'TV show',
-        'size': 100
+        'top': 100
     }
     await send_message_with_data(ctx, request, args)
 
@@ -49,7 +48,7 @@ async def random_anime(ctx):
     args = ('country=JP', 'genres=animation')
     request = {
         'type': 'anime',
-        'size': 1000,
+        'top': 1000,
         'country': 'Japan',
         'genres': 'animation'
     }
@@ -60,7 +59,7 @@ async def random_anime_movie(ctx):
     args = ('country=JP', 'genres=animation')
     request = {
         'type': 'anime movie',
-        'size': 1000,
+        'top': 1000,
         'country': 'Japan',
         'genres': 'animation'
     }
