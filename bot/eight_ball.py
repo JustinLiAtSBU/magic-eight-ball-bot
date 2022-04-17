@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from seasoning import get_name, user_request_response, motion_picture_embed
 from typing import Final
-from discord.ui import Button, View
 from requester import build_and_send_request
 
 
@@ -31,7 +30,7 @@ async def who_streaming(ctx):
 async def random_movie(ctx, *args):
     request = {
         'type': 'movie',
-        'size': 100
+        'top': 100
     }
     await send_message_with_data(ctx, request, args)
 
@@ -39,7 +38,7 @@ async def random_movie(ctx, *args):
 async def random_tv_show(ctx, *args):
     request = {
         'type': 'TV show',
-        'size': 100
+        'top': 100
     }
     await send_message_with_data(ctx, request, args)
 
@@ -48,7 +47,7 @@ async def random_anime(ctx):
     args = ('country=JP', 'genres=animation')
     request = {
         'type': 'anime',
-        'size': 1000,
+        'top': 1000,
         'country': 'Japan',
         'genres': 'animation'
     }
@@ -59,7 +58,7 @@ async def random_anime_movie(ctx):
     args = ('country=JP', 'genres=animation')
     request = {
         'type': 'anime movie',
-        'size': 1000,
+        'top': 1000,
         'country': 'Japan',
         'genres': 'animation'
     }
@@ -67,7 +66,7 @@ async def random_anime_movie(ctx):
 
 async def send_message_with_data(ctx, request, args):
     await ctx.send(user_request_response(ctx.author, request, args))
-    data =  build_and_send_request(request, args)
+    data = build_and_send_request(request, args)
     await ctx.send(embed=motion_picture_embed(ctx.author, data), view=Ballot(ctx, data, get_channel_members(ctx)))
 
 def get_channel_members(ctx):

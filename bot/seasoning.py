@@ -33,7 +33,7 @@ def motion_picture_embed(author, data):
     name, emoji = get_country_info(country.alpha_2)
     embed.add_field(name="Runtime ⏱", value=f"{get_common_time(data['runtime'])}", inline=False)
     embed.add_field(name="Country", value=f"{name} {emoji}", inline=False)
-    embed.add_field(name="Genres", value=f"{data['genres']}", inline=False)
+    embed.add_field(name="Genres", value=f"{', '.join(data['genres'])}", inline=False)
     embed.add_field(name="Awards 🏆", value=f"{data['awards']}", inline=False)
     embed.set_image(url=data['poster'])
     embed.add_field(name="\u200b", value="Contribute to this bot [here](https://github.com/JustinLiAtSBU/magic-eight-ball-bot)")
@@ -41,7 +41,7 @@ def motion_picture_embed(author, data):
 
 def user_request_response(author, request, args):
     response = f"✨ Your request is in {get_name(author)} ✨ \n\n"
-    response += f"You want to watch a random {request['type']} out of the top {request['size']} movies on **IMDB**...\n"
+    response += f"You want to watch a random {request['type']} out of the top {request['top']} movies on **IMDB**...\n"
     for arg in args:
         key = arg.split('=')[0]
         value = arg.split('=')[1]
@@ -57,7 +57,7 @@ def user_request_response(author, request, args):
         elif key == 'genres':
             genres = genre_match(value.split(','))
             response += f"with the genre {', '.join(genres)}" if len(genres) == 1 else f"with the genres {', '.join(genres)}"
-        else:
+        elif key != 'top':
             response += f'a minimum {key} of {value}\n'
     response += f'\n\n🥁 **Your random {request["type"]} is... **🥁\n\n'
     return response
