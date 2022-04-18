@@ -10,22 +10,30 @@ PATH_MAP: Final = {
     'anime': 'tvshows/random',
     'anime movie': 'movies/random',
     'create/update channel': 'channels/create',
+    'update_channels_watched_movies': 'channels/updatewatchedmovies',
+    'update_channels_watched_tv_shows': 'channels/updatewatchedtvshows',
 }
 NON_MIN_QUERY_PARAMS: Final = ['country', 'top', 'genres']
 
 
 async def random_motion_picture_request(request, args):
     url = f"{API}/{PATH_MAP[request['type']]}"
-    print("REQUEST =================")
-    print(url)
-    print(args)
     res = requests.get(url=url, params=build_params(args))
     return res.json()
 
-async def create_channel_request(request, params, body):
-    url = f"{API}/{PATH_MAP[request['type']]}"
+async def create_channel_request(params, body):
+    url = f"{API}/{PATH_MAP['create/update channel']}"
     res = requests.post(url=url, params=params, json=body)
-    print(f"Channel {params['channelName']} created/updated")
+    return res
+
+async def update_channels_watched_movies(channel_id, body):
+    url = f"{API}/{PATH_MAP['update_channels_watched_movies']}/{channel_id}"
+    res = requests.put(url, json=body)
+    return res
+
+async def update_channels_watched_tv_shows(channel_id, body):
+    url = f"{API}/{PATH_MAP['update_channels_watched_tv_shows']}/{channel_id}"
+    res = requests.put(url, json=body)
     return res
 
 def build_params(args):

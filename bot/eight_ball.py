@@ -9,7 +9,7 @@ from discord.ext import commands
 from seasoning import progress_bar
 from discord.ui import Button, View
 from seasoning import get_name, user_request_response, motion_picture_embed
-from requester import random_motion_picture_request, create_channel_request
+from requester import *
 
 
 
@@ -74,7 +74,7 @@ async def send_message_with_data(ctx, request, args, callback):
     await create_or_update_channel(ctx)
     await ctx.send(user_request_response(ctx.author, request, args))
     data = await random_motion_picture_request(request, args)
-    view = Ballot(ctx, data, get_online_channel_members(ctx), callback, timeout=600)
+    view = Ballot(ctx, request, data, get_online_channel_members(ctx), callback, timeout=600)
 
     # TODO: Figure out how to make animix links 100% accurate
     if 'anime' in request['type']:
@@ -94,20 +94,20 @@ def get_all_channel_members(ctx):
     return [f"{m.name}#{m.discriminator}" for m in ctx.channel.members if not m.bot]
 
 async def create_or_update_channel(ctx):
-    request = {'type': 'create/update channel'}
     params = {
         'channelId': str(ctx.channel.id),
         'channelName': ctx.channel.name,
         'guild': ctx.guild.name
     }
     body = get_all_channel_members(ctx)
-    await create_channel_request(request, params, body)
+    await create_channel_request(params, body)
 
 
 class Ballot(View):
-    def __init__(self, ctx, data, members, callback, timeout=180):
+    def __init__(self, ctx, request, data, members, callback, timeout=180):
         super().__init__(timeout=timeout)
         self.ctx = ctx
+        self.request = request
         self.data = data
         self.members = members
         self.callback = callback
@@ -141,7 +141,12 @@ class Ballot(View):
         ratio = self.update_dont_suggest_button(button)
         if ratio >= 0.5:
             self.disable_dont_suggest_button()
-            await self.ctx.send(f"Adding **{self.data['title']}** to channels **Don't Suggest List**")
+            print("Updating channels watched movies")
+            if 'movie' in self.request['type']:
+                await update_channels_watched_movies(self.ctx.channel.id, self.data)
+            else:
+                await update_channels_watched_tv_shows(self.ctx.channel.id, self.data)
+            await self.ctx.send(f"Added **{self.data['title']}** to channels **Don't Suggest List**")
             await self.callback
         await interaction.response.edit_message(view=self)
 
