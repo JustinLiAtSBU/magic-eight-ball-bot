@@ -19,9 +19,12 @@ if FRIENDS_CSV is not None:
 def get_friends():
     return friends
 
-def get_name(author: discord.Member):
-    full_username = f'{author.name}#{author.discriminator}'
-    return friends[full_username] if full_username in friends else full_username
+def get_name(author):
+    if type(author) is discord.Member:
+        full_username = f'{author.name}#{author.discriminator}'
+        return friends[full_username] if full_username in friends else full_username
+    else:
+        return friends[author] if author in friends else author
 
 def motion_picture_embed(author, data):
     embed = discord.Embed(title=f"🍿 **{data['title']}** 🎬", description="", color=0x00ff00)
@@ -79,3 +82,10 @@ def get_common_time(time):
     if minutes:
         common_time += f"and {minutes} minutes"
     return common_time
+
+def progress_bar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filled_length = int(length * iteration // total)
+    # This requires two underscores because of discord text sizing
+    bar = fill * filled_length + '__' * (length - filled_length)
+    return f"\r{prefix} |{bar}| {percent}% {suffix}"
