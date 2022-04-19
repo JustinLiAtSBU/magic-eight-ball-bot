@@ -2,6 +2,7 @@ import os
 import re
 import random
 import discord
+from tqdm import tqdm
 from typing import Final
 # from components import Ballot
 from dotenv import load_dotenv
@@ -136,13 +137,13 @@ class Ballot(View):
             await self.callback
         await interaction.response.edit_message(view=self)
 
-    # TODO: Add watched feature for users in upcoming release
     @discord.ui.button(label="Don't Suggest Again 🚫 ", custom_id='dont_suggest_button', style=discord.ButtonStyle.blurple)
     async def dont_suggest_callback(self, button, interaction):
         self.dont_suggest_votes[interaction.user] = 1
         ratio = self.update_dont_suggest_button(button)
         if ratio >= 0.5:
             self.disable_dont_suggest_button()
+            self.disable_vote_buttons()
             if 'movie' in self.request['type']:
                 await update_channels_watched_movies(self.ctx.channel.id, self.data)
             else:
@@ -168,7 +169,7 @@ class Ballot(View):
 
     def update_dont_suggest_button(self, button):
         ratio = self.total_dont_suggest_votes()/len(self.members)
-        progress = progress_bar(self.total_dont_suggest_votes(), len(self.members), length=20)
+        progress = progress_bar(self.total_dont_suggest_votes(), len(self.members), length=10)
         button.label = f"Don't Suggest Again 🚫 {progress}"
         return ratio
     

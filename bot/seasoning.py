@@ -85,7 +85,6 @@ def get_common_time(time):
 
 def progress_bar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-    filled_length = int(length * iteration // total)
-    # This requires two underscores because of discord text sizing
-    bar = fill * filled_length + '__' * (length - filled_length)
+    filled_length = round(length * iteration // total)
+    bar = fill * filled_length + '─' * (length - filled_length)
     return f"\r{prefix} |{bar}| {percent}% {suffix}"
