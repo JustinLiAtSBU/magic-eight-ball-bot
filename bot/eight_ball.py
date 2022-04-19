@@ -137,7 +137,7 @@ class Ballot(View):
             await self.callback
         await interaction.response.edit_message(view=self)
 
-    @discord.ui.button(label="Don't Suggest Again 🚫 ", custom_id='dont_suggest_button', style=discord.ButtonStyle.blurple)
+    @discord.ui.button(label="Don't Suggest 🚫 ", custom_id='dont_suggest_button', style=discord.ButtonStyle.blurple)
     async def dont_suggest_callback(self, button, interaction):
         self.dont_suggest_votes[interaction.user] = 1
         ratio = self.update_dont_suggest_button(button)
@@ -170,7 +170,7 @@ class Ballot(View):
     def update_dont_suggest_button(self, button):
         ratio = self.total_dont_suggest_votes()/len(self.members)
         progress = progress_bar(self.total_dont_suggest_votes(), len(self.members), length=10)
-        button.label = f"Don't Suggest Again 🚫 {progress}"
+        button.label = f"Don't Suggest 🚫 {progress}"
         return ratio
     
     def update_button_votes(self):
