@@ -2,16 +2,13 @@ import os
 import re
 import random
 import discord
-from tqdm import tqdm
 from typing import Final
-# from components import Ballot
 from dotenv import load_dotenv
 from discord.ext import commands
 from seasoning import progress_bar
 from discord.ui import Button, View
 from seasoning import get_name, user_request_response, motion_picture_embed
 from requester import *
-
 
 
 load_dotenv()
