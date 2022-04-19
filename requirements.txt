@@ -4,7 +4,6 @@ attrs==21.4.0
 certifi==2021.10.8
 chardet==4.0.0
 charset-normalizer==2.0.12
-discord==1.7.3
 discord-components==2.1.2
 discord-ui==5.1.6
 discord.py==1.7.3
@@ -16,7 +15,7 @@ idna==3.3
 imageio-ffmpeg==0.4.6
 multidict==6.0.2
 numpy==1.22.3
-py-cord @ git+https://github.com/Pycord-Development/pycord@96925fe705e264dd1e5c1f58e5af4d5004d7d1f8
+py-cord==2.0.0b7
 pycountry==22.3.5
 python-dotenv==0.20.0
 python-Levenshtein==0.12.2
