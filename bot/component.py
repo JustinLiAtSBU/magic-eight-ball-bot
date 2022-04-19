@@ -23,6 +23,7 @@ class Ballot(View):
         self.update_button_votes()
         if self.all_voted():
             self.disable_vote_buttons()
+            self.get_dont_suggest_button().label = "Watched "
             await self.ctx.send(embed=self.votes_embed())
         await interaction.response.edit_message(view=self)
 
@@ -70,7 +71,7 @@ class Ballot(View):
     def update_dont_suggest_button(self, button):
         ratio = self.total_dont_suggest_votes()/len(self.members)
         progress = progress_bar(self.total_dont_suggest_votes(), len(self.members), length=10)
-        button.label = f"Don't Suggest 🚫 {progress}"
+        button.label += progress
         return ratio
     
     def update_button_votes(self):
