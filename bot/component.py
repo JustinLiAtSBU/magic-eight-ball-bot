@@ -81,14 +81,11 @@ class Ballot(View):
                 child.label = f"{self.downvotes()}" if self.downvotes() > 0 else ''
     
     def disable_vote_buttons(self):
-        for child in self.children:
-            if child.custom_id is not None:
-                child.disabled = re.match(self.pattern, child.custom_id)
-    
+        self.get_upvote_button().disabled = True
+        self.get_downvote_button().disabled = True
+
     def disable_dont_suggest_button(self):
-        for child in self.children:
-            if child.custom_id is not None and child.custom_id == 'dont_suggest_button':
-                child.disabled = True
+        self.get_dont_suggest_button().disabled = True
 
     def get_upvote_button(self):
         for child in self.children:
