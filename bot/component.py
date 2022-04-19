@@ -19,10 +19,6 @@ class Ballot(View):
 
     @discord.ui.button(custom_id='upvote_button', style=discord.ButtonStyle.green, emoji="👍")
     async def upvote_callback(self, interaction, button):
-        print("button: ")
-        print(button)
-        print("interaction: ")
-        print(interaction)
         self.votes[interaction.user] = 1
         self.update_button_votes()
         if self.all_voted():
@@ -32,10 +28,6 @@ class Ballot(View):
 
     @discord.ui.button(custom_id='downvote_button', style=discord.ButtonStyle.danger, emoji="👎")
     async def downvote_callback(self, interaction, button):
-        print("button: ")
-        print(button)
-        print("interaction: ")
-        print(interaction)
         self.votes[interaction.user] = -1
         self.update_button_votes()
         if self.all_voted():
@@ -46,21 +38,18 @@ class Ballot(View):
 
     @discord.ui.button(label="Don't Suggest 🚫 ", custom_id='dont_suggest_button', style=discord.ButtonStyle.blurple)
     async def dont_suggest_callback(self, interaction, button):
-        print("button: ")
-        print(button)
-        print("interaction: ")
-        print(interaction)
         self.dont_suggest_votes[interaction.user] = 1
         ratio = self.update_dont_suggest_button(button)
         if ratio >= 0.5:
             self.disable_dont_suggest_button()
+            if self.get_upvote_button().disabled is False:
+                await self.callback
             self.disable_vote_buttons()
             if 'movie' in self.request['type']:
                 await update_channels_watched_movies(self.ctx.channel.id, self.data)
             else:
                 await update_channels_watched_tv_shows(self.ctx.channel.id, self.data)
             await self.ctx.send(f"Added **{self.data['title']}** to channels **Don't Suggest List**")
-            await self.callback
         await interaction.response.edit_message(view=self)
 
     def all_voted(self):
@@ -100,6 +89,22 @@ class Ballot(View):
         for child in self.children:
             if child.custom_id is not None and child.custom_id == 'dont_suggest_button':
                 child.disabled = True
+
+    def get_upvote_button(self):
+        for child in self.children:
+            if child.custom_id is not None and child.custom_id == 'upvote_button':
+                return child
+    
+    def get_downvote_button(self):
+        for child in self.children:
+            if child.custom_id is not None and child.custom_id == 'downvote_button':
+                return child
+
+    def get_dont_suggest_button(self):
+        for child in self.children:
+            if child.custom_id is not None and child.custom_id == 'dont_suggest_button':
+                return child
+
 
     def votes_embed(self):
         embed_color = 0x808080
