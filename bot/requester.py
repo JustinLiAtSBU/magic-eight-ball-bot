@@ -16,10 +16,13 @@ PATH_MAP: Final = {
 NON_MIN_QUERY_PARAMS: Final = ['country', 'top', 'genres']
 
 
-async def random_motion_picture_request(request, args):
-    url = f"{API}/{PATH_MAP[request['type']]}"
+async def random_motion_picture_request(channel_id, request, args):
+    url = f"{API}/{PATH_MAP[request['type']]}/{channel_id}"
     res = requests.get(url=url, params=build_params(args))
-    return res.json()
+    if res.text:
+        return res.json()
+    else:
+        return None
 
 async def create_channel_request(params, body):
     url = f"{API}/{PATH_MAP['create/update channel']}"

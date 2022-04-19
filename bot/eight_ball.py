@@ -73,19 +73,21 @@ async def random_anime_movie(ctx):
 async def send_message_with_data(ctx, request, args, callback):
     await create_or_update_channel(ctx)
     await ctx.send(user_request_response(ctx.author, request, args))
-    data = await random_motion_picture_request(request, args)
-    view = Ballot(ctx, request, data, get_online_channel_members(ctx), callback, timeout=600)
+    data = await random_motion_picture_request(ctx.channel.id, request, args)
+    if data is None:
+        await ctx.send(f"No {request['type']}s found with those criteria")
+    else:
+        view = Ballot(ctx, request, data, get_online_channel_members(ctx), callback, timeout=600)
+        # TODO: Figure out how to make animix links 100% accurate
+        if 'anime' in request['type']:
+            url =  "https://animixplay.to/v1/" + '-'.join(data['title'].split(' '))
+            animix_link = Button(label="Watch Free", style=discord.ButtonStyle.blurple, url=url, emoji="<a:kannaWink:909791444661850132>")
+            view.add_item(animix_link)
+        if request['type'] == 'movie' or request['type'] == 'TV show':
+            imdb_button = Button(label="IMDB", style=discord.ButtonStyle.link, url=f"https://www.imdb.com/title/{data['tconst']}")
+            view.add_item(imdb_button)
 
-    # TODO: Figure out how to make animix links 100% accurate
-    if 'anime' in request['type']:
-        url =  "https://animixplay.to/v1/" + '-'.join(data['title'].split(' '))
-        animix_link = Button(label="Watch Free", style=discord.ButtonStyle.blurple, url=url, emoji="<a:kannaWink:909791444661850132>")
-        view.add_item(animix_link)
-    if request['type'] == 'movie' or request['type'] == 'TV show':
-        imdb_button = Button(label="IMDB", style=discord.ButtonStyle.link, url=f"https://www.imdb.com/title/{data['tconst']}")
-        view.add_item(imdb_button)
-
-    await ctx.send(embed=motion_picture_embed(ctx.author, data), view=view)
+        await ctx.send(embed=motion_picture_embed(ctx.author, data), view=view)
 
 def get_online_channel_members(ctx):
     return [f"{m.name}#{m.discriminator}" for m in ctx.channel.members if not m.bot and m.status is discord.Status.online]
@@ -141,7 +143,6 @@ class Ballot(View):
         ratio = self.update_dont_suggest_button(button)
         if ratio >= 0.5:
             self.disable_dont_suggest_button()
-            print("Updating channels watched movies")
             if 'movie' in self.request['type']:
                 await update_channels_watched_movies(self.ctx.channel.id, self.data)
             else:
