@@ -28,7 +28,8 @@ def get_name(author):
 
 def motion_picture_embed(author, data):
     embed = discord.Embed(title=f"🍿 **{data['title']}** 🎬", description="", color=0x00ff00)
-    embed.set_author(name=f"{get_name(author)}", url="", icon_url=author.avatar.url)
+    icon_url = author.avatar.url if author.avatar is not None else ""
+    embed.set_author(name=f"{get_name(author)}", url="", icon_url=icon_url)
     embed.add_field(name="\u200b", value=f"{data['plot']}", inline=False)
     embed.add_field(name="Release Date 🗓 ", value=f"{data['year']}", inline=True)
     embed.add_field(name="Rating ⭐️", value=f"{data['rating']}⭐️ from {data['votes']} users 🕺", inline=False)
