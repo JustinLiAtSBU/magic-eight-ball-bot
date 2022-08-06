@@ -77,11 +77,14 @@ async def send_message_with_data(ctx, request, args, callback):
         await ctx.send(f"No {request['type']}s found with those criteria")
     else:
         view = Ballot(ctx, request, data, get_online_channel_members(ctx), callback, timeout=600)
-        # TODO: Figure out how to make animix links 100% accurate
+        
         if 'anime' in request['type']:
-            url =  "https://animixplay.to/v1/" + '-'.join(data['title'].split(' '))
-            animix_link = Button(label="Watch Free", style=discord.ButtonStyle.blurple, url=url, emoji="🏴‍☠️")
-            view.add_item(animix_link)
+            url = f"https://animixplay.to/?q={'%20'.join(data['title'].split(' '))}"
+        else:
+            url = f"https://ww5.0123movie.net/search/{'+'.join(data['title'].split(' '))}.html"
+        watch_link = Button(label="Watch Free", style=discord.ButtonStyle.blurple, url=url, emoji="🏴‍☠️")
+        view.add_item(watch_link)
+        
         if request['type'] == 'movie' or request['type'] == 'TV show':
             imdb_button = Button(label="IMDB", style=discord.ButtonStyle.link, url=f"https://www.imdb.com/title/{data['tconst']}")
             view.add_item(imdb_button)
