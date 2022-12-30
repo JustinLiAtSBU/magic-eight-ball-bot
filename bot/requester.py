@@ -24,20 +24,24 @@ async def random_motion_picture_request(channel_id, request, args):
     else:
         return None
 
+
 async def create_channel_request(params, body):
     url = f"{API}/{PATH_MAP['create/update channel']}"
     res = requests.post(url=url, params=params, json=body)
     return res
+
 
 async def update_channels_watched_movies(channel_id, body):
     url = f"{API}/{PATH_MAP['update_channels_watched_movies']}/{channel_id}"
     res = requests.put(url, json=body)
     return res
 
+
 async def update_channels_watched_tv_shows(channel_id, body):
     url = f"{API}/{PATH_MAP['update_channels_watched_tv_shows']}/{channel_id}"
     res = requests.put(url, json=body)
     return res
+
 
 def build_params(args):
     PARAMS = {}

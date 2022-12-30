@@ -1,4 +1,3 @@
-import re
 import discord
 from seasoning import progress_bar
 from discord.ui import View
@@ -13,8 +12,8 @@ class Ballot(View):
         self.data = data
         self.members = members
         self.callback = callback
-        self.votes = { member : 0 for member in members}
-        self.dont_suggest_votes = { member : 0 for member in members}
+        self.votes = {member: 0 for member in members}
+        self.dont_suggest_votes = {member: 0 for member in members}
         self.pattern = r"(.*)vote_button"
 
     @discord.ui.button(custom_id='upvote_button', style=discord.ButtonStyle.green, emoji="👍")
@@ -64,23 +63,23 @@ class Ballot(View):
 
     def downvotes(self):
         return len([vote for vote in self.votes.values() if vote == -1])
-    
+
     def total_dont_suggest_votes(self):
         return len([vote for vote in self.dont_suggest_votes.values() if vote == 1])
 
     def update_dont_suggest_button(self, button):
-        ratio = self.total_dont_suggest_votes()/len(self.members)
+        ratio = self.total_dont_suggest_votes() / len(self.members)
         progress = progress_bar(self.total_dont_suggest_votes(), len(self.members), length=10)
         button.label += progress
         return ratio
-    
+
     def update_button_votes(self):
         for child in self.children:
             if child.custom_id == 'upvote_button':
                 child.label = f"{self.upvotes()}" if self.upvotes() > 0 else ''
             elif child.custom_id == 'downvote_button':
                 child.label = f"{self.downvotes()}" if self.downvotes() > 0 else ''
-    
+
     def disable_vote_buttons(self):
         self.get_upvote_button().disabled = True
         self.get_downvote_button().disabled = True
@@ -92,7 +91,7 @@ class Ballot(View):
         for child in self.children:
             if child.custom_id is not None and child.custom_id == 'upvote_button':
                 return child
-    
+
     def get_downvote_button(self):
         for child in self.children:
             if child.custom_id is not None and child.custom_id == 'downvote_button':
@@ -103,7 +102,6 @@ class Ballot(View):
             if child.custom_id is not None and child.custom_id == 'dont_suggest_button':
                 return child
 
-
     def votes_embed(self):
         embed_color = 0x808080
         result_value = "TIE\n"
@@ -113,7 +111,7 @@ class Ballot(View):
         elif self.total_votes() < 0:
             result_value = "SKIP ⏭\n"
             embed_color = 0xff0000
-            
+
         embed = discord.Embed(title=f"🗳  Votes are in for **{self.data['title']}**", description="", color=embed_color)
         embed.add_field(name="Result", value=result_value, inline=True)
         embed.add_field(name="Upvotes", value=f"{self.upvotes()} ⬆️ ", inline=False)

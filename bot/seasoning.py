@@ -5,7 +5,6 @@ import pycountry
 from dotenv import load_dotenv
 from fuzzy_match import genre_match
 
-
 load_dotenv()
 FRIENDS_CSV = os.getenv('FRIENDS')
 friends = {}
@@ -16,8 +15,10 @@ if FRIENDS_CSV is not None:
         real_name = mapping.split(':')[1]
         friends[username] = real_name
 
+
 def get_friends():
     return friends
+
 
 def get_name(author):
     if type(author) is discord.Member:
@@ -25,6 +26,7 @@ def get_name(author):
         return friends[full_username] if full_username in friends else full_username
     else:
         return friends[author] if author in friends else author
+
 
 def motion_picture_embed(author, data):
     embed = discord.Embed(title=f"🍿 **{data['title']}** 🎬", description="", color=0x00ff00)
@@ -40,8 +42,10 @@ def motion_picture_embed(author, data):
     embed.add_field(name="Genres", value=f"{', '.join(data['genres'])}", inline=False)
     embed.add_field(name="Awards 🏆", value=f"{data['awards']}", inline=False)
     embed.set_image(url=data['poster'])
-    embed.add_field(name="\u200b", value="Contribute to this bot [here](https://github.com/JustinLiAtSBU/magic-eight-ball-bot)")
+    embed.add_field(name="\u200b",
+                    value="Contribute to this bot [here](https://github.com/JustinLiAtSBU/magic-eight-ball-bot)")
     return embed
+
 
 def user_request_response(author, request, args):
     response = f"✨ Your request is in {get_name(author)} ✨ \n\n"
@@ -60,11 +64,13 @@ def user_request_response(author, request, args):
             response += f'from {name} {emoji}\n'
         elif key == 'genres':
             genres = genre_match(value.split(','))
-            response += f"with the genre {', '.join(genres)}" if len(genres) == 1 else f"with the genres {', '.join(genres)}"
+            response += f"with the genre {', '.join(genres)}" if len(
+                genres) == 1 else f"with the genres {', '.join(genres)}"
         elif key != 'top':
             response += f'a minimum {key} of {value}\n'
     response += f'\n\n🥁 **Your random {request["type"]} is... **🥁\n\n'
     return response
+
 
 def get_country_info(country_code):
     country = pycountry.countries.get(alpha_2=country_code)
@@ -73,6 +79,7 @@ def get_country_info(country_code):
         name = country.common_name
     emoji = flag.flag(country_code)
     return name, emoji
+
 
 def get_common_time(time):
     common_time = f""
@@ -84,7 +91,8 @@ def get_common_time(time):
         common_time += f"and {minutes} minutes"
     return common_time
 
-def progress_bar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+
+def progress_bar(iteration, total, prefix='', suffix='', decimals=1, length=100, fill='█', printEnd="\r"):
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filled_length = round(length * iteration // total)
     bar = fill * filled_length + '─' * (length - filled_length)
