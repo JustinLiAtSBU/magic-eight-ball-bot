@@ -1,12 +1,8 @@
-import os
-import re
 import random
 import discord
-from typing import Final
 from dotenv import load_dotenv
 from discord.ext import commands
-from seasoning import progress_bar
-from discord.ui import Button, View
+from discord.ui import Button
 from component import Ballot
 from seasoning import get_name, user_request_response, motion_picture_embed
 from requester import *
