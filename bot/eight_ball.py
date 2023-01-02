@@ -7,6 +7,7 @@ from component import Ballot
 from seasoning import get_name, user_request_response, motion_picture_embed
 from requester import *
 
+
 load_dotenv()
 TOKEN: Final = os.getenv('DISCORD_TOKEN')
 intents = discord.Intents().default()
@@ -18,6 +19,7 @@ bot = commands.Bot(command_prefix='$', intents=intents)
 
 @bot.event
 async def on_ready():
+    await bot.load_extension(f"cogs.music")
     print(f'{bot.user.name} has connected to Discord')
 
 
