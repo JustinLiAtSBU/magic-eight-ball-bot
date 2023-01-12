@@ -20,7 +20,7 @@ class Music(commands.Cog):
 
     @commands.Cog.listener()
     async def on_wavelink_node_ready(self, node: wavelink.Node):
-        print(f"Node <{node.identifier}> is now Ready!")
+        print(f"Node <{node.identifier}> is now ready!")
 
     @commands.command(name="join", aliases=["connect", "summon"])
     async def join_command(self, ctx: commands.Context, channel: typing.Optional[discord.VoiceChannel]):
@@ -32,7 +32,7 @@ class Music(commands.Cog):
 
         if player is not None:
             if player.is_connected():
-                return await ctx.send("bot is already connected to a voice channel")
+                return await ctx.send("Bot is already connected to a voice channel")
 
         await channel.connect(cls=wavelink.Player)
         mbed = discord.Embed(title=f"Connected to {channel.name}", color=discord.Color.from_rgb(255, 255, 255))
@@ -74,7 +74,7 @@ class Music(commands.Cog):
 
         if player.is_playing:
             await player.stop()
-            mbed = discord.Embed(title="Playback Stoped", color=discord.Color.from_rgb(255, 255, 255))
+            mbed = discord.Embed(title="Playback Stopped", color=discord.Color.from_rgb(255, 255, 255))
             return await ctx.send(embed=mbed)
         else:
             return await ctx.send("Nothing Is playing right now")
@@ -95,7 +95,7 @@ class Music(commands.Cog):
             else:
                 return await ctx.send("Nothing is playing right now")
         else:
-            return await ctx.send("Playback is Already paused")
+            return await ctx.send("Playback is already paused")
 
     @commands.command(name="resume")
     async def resume_command(self, ctx: commands.Context):
@@ -103,14 +103,14 @@ class Music(commands.Cog):
         player = node.get_player(ctx.guild)
 
         if player is None:
-            return await ctx.send("bot is not connnected to any voice channel")
+            return await ctx.send("Bot is not connected to any voice channel")
 
         if player.is_paused():
             await player.resume()
             mbed = discord.Embed(title="Playback resumed", color=discord.Color.from_rgb(255, 255, 255))
             return await ctx.send(embed=mbed)
         else:
-            return await ctx.send("playback is not paused")
+            return await ctx.send("Playback is not paused")
 
     @commands.command(name="volume")
     async def volume_command(self, ctx: commands.Context, to: int):
@@ -123,7 +123,7 @@ class Music(commands.Cog):
         player = node.get_player(ctx.guild)
 
         await player.set_volume(to)
-        mbed = discord.Embed(title=f"Changed Volume to {to}", color=discord.Color.from_rgb(255, 255, 255))
+        mbed = discord.Embed(title=f"Changed volume to {to}", color=discord.Color.from_rgb(255, 255, 255))
         await ctx.send(embed=mbed)
 
 
