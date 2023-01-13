@@ -2,6 +2,7 @@ import discord
 import typing
 import wavelink
 from discord.ext import commands
+import random
 
 
 class Music(commands.Cog):
@@ -61,8 +62,11 @@ class Music(commands.Cog):
 
         await vc.play(search)
 
-        mbed = discord.Embed(title=f"Now Playing {search}", color=discord.Color.from_rgb(255, 255, 255))
-        await ctx.send(embed=mbed)
+        random_color = discord.Color.from_rgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        embed = discord.Embed(title=f"🎶 Now Playing 🎶 \n\n {search}", color=random_color, url=search.uri)
+        if search.thumbnail is not None:
+            embed.set_image(url=search.thumbnail)
+        await ctx.send(embed=embed)
 
     @commands.command(name="stop")
     async def stop_command(self, ctx: commands.Context):
